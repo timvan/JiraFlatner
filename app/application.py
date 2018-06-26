@@ -20,7 +20,7 @@ def get_issues():
         config = json.load(jsonfile)
     
     headers = config['headers']
-    
+
     querystring = {
         "jql": "project = ADS order by created ASC",
         # "jql": "project = ADS AND type in standardIssueTypes()",
@@ -129,8 +129,8 @@ def format_issue(i):
     # issue['labels'] = i['fields']['labels'] # LIST TABLE MAYBE REQD
     issue['parentId'] = i['fields']['parent']['id'] if 'parent' in i['fields'] else None
     issue['parentKey'] = i['fields']['parent']['key'] if 'parent' in i['fields'] else None
-    issue['priorityId'] = i['fields']['priority']['id']
-    issue['priorityName'] = i['fields']['priority']['name']
+    # issue['priorityId'] = i['fields']['priority']['id'] if 'priority' in i['fields'] else None
+    # issue['priorityName'] = i['fields']['priority']['name'] if 'priority' in i['fields'] else None
     issue['projectKey'] = i['fields']['project']['key']
     issue['projectName'] = i['fields']['project']['name']
     issue['reporter'] = i['fields']['reporter']['displayName'] if i['fields']['reporter'] else None
@@ -391,7 +391,10 @@ def format_fix(f):
     except:
         fix['description'] = None
 
-    fix['releaseDate'] = f['releaseDate']
+    try:
+        fix['releaseDate'] = f['releaseDate']
+    except:
+         fix['releaseDate'] = None
 
     return translate_dict('fixVersions_', fix)
 
@@ -563,7 +566,7 @@ def in_which_sprint(issue, event_date):
 if __name__ == "__main__":
 
     PAGINATE = True
-    OFFLINE_MODE = False
+    OFFLINE_MODE = True
     
     if OFFLINE_MODE:
         print('-'*20)
@@ -589,11 +592,11 @@ if __name__ == "__main__":
 
 
 
-    # issues_to_csv(issues)
-    # issues_to_sprints_to_csv(issues)
-    # sprints_to_csv(sprints)
-    # changelog_to_csv(issues)
-    # issues_to_fixVersions_to_csv(issues)
-    # fixVersions_to_csv(issues)
+    issues_to_csv(issues)
+    issues_to_sprints_to_csv(issues)
+    sprints_to_csv(sprints)
+    changelog_to_csv(issues)
+    issues_to_fixVersions_to_csv(issues)
+    fixVersions_to_csv(issues)
     issues_to_impactedCustomers_to_csv(issues)
 
